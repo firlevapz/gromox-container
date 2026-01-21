@@ -22,41 +22,50 @@ ARG GROMMUNIO_REPO=openSUSE_Leap_15.6
 # Systemd installation
 #
 RUN zypper -n install -y \
-        iptables   \
-        iproute2    \
-        kmod       \
-        curl    \
-        patterns-base-apparmor \ 
-        patterns-base-base \ 
-        procps  \
-        sudo       \
-        systemd 
+    iptables   \
+    iproute2    \
+    kmod       \
+    curl    \
+    patterns-base-apparmor \
+    patterns-base-base \
+    procps  \
+    sudo       \
+    systemd
 
 RUN	curl https://download.grommunio.com/RPM-GPG-KEY-grommunio > gr.key && \
-	  rpm --import gr.key && \
-	  zypper --non-interactive --quiet ar -C https://download.grommunio.com/community/${GROMMUNIO_REPO} grommunio && \
-	  zypper --gpg-auto-import-keys ref && \
-	  zypper -n refresh grommunio
+    rpm --import gr.key && \
+    zypper --non-interactive --quiet ar -C https://download.grommunio.com/community/${GROMMUNIO_REPO} grommunio && \
+    zypper --gpg-auto-import-keys ref && \
+    zypper -n refresh grommunio
 
 RUN    zypper --non-interactive install -y vim nginx        \
-	mysql grommunio-common firewalld cyrus-sasl-saslauthd cyrus-sasl-plain jq php-fpm redis grommunio-files rabbitmq-server grommunio-office
+    mysql grommunio-common firewalld cyrus-sasl-saslauthd cyrus-sasl-plain jq php-fpm redis grommunio-files rabbitmq-server grommunio-office
 
-    # Unmask services
+# Unmask services
 RUN    systemctl unmask                                                  \
-        systemd-remount-fs.service                                    \
-        dev-hugepages.mount                                           \
-        sys-fs-fuse-connections.mount                                 \
-        systemd-logind.service                                        \
-        getty.target                                                  \
-        console-getty.service 
-    # Prevent journald from reading kernel messages from /dev/kmsg
+    systemd-remount-fs.service                                    \
+    dev-hugepages.mount                                           \
+    sys-fs-fuse-connections.mount                                 \
+    systemd-logind.service                                        \
+    getty.target                                                  \
+    console-getty.service
+# Prevent journald from reading kernel messages from /dev/kmsg
 
-RUN    echo "ReadKMsg=no" >> /etc/systemd/journald.conf                                                             
+# Add this to your Dockerfile for the archive and core images
+RUN systemctl mask \
+    sys-kernel-debug.mount \
+    sys-kernel-tracing.mount \
+    sys-kernel-config.mount \
+    auditd.service \
+    systemd-modules-load.service
+
+
+RUN    echo "ReadKMsg=no" >> /etc/systemd/journald.conf
 RUN    mkdir -p /etc/systemd/system/epmd.service.d && \
-   printf '[Service]\nLimitNPROC=5\n' > /etc/systemd/system/epmd.service.d/fixup.conf
-                                                                
-    # Create default user if needed
-    # useradd --create-home --shell /bin/bash your_username -G wheel && echo "your_username:your_password" | chpasswd
+    printf '[Service]\nLimitNPROC=5\n' > /etc/systemd/system/epmd.service.d/fixup.conf
+
+# Create default user if needed
+# useradd --create-home --shell /bin/bash your_username -G wheel && echo "your_username:your_password" | chpasswd
 RUN    groupadd 'wheel' &&                         \
     useradd -m -s /bin/bash -G wheel admin && echo "admin:admin" | chpasswd
 
