@@ -1,6 +1,4 @@
-version: '3'
 services:
-
   gromox-db:
     image: mariadb:10
     container_name: gromox-db
@@ -42,7 +40,7 @@ services:
       mynet:
         aliases:
           - chat-db
-    
+
   files-db:
     image: mariadb:10
     container_name: files-db
@@ -120,7 +118,7 @@ services:
       - variables_data:/home/vars
       - cert_data:/etc/grommunio-common/ssl
     ports:
-      - "2222:22"  # SSH
+      - "2222:22" # SSH
       - "8443:8443" # Grommunio Admin
       - "443:443" # Grommunio Web
       - "993:993" # Grommunio IMAP
@@ -211,11 +209,10 @@ networks:
     enable_ipv6: true
     ipam:
       config:
-        -  subnet: 17.18.0.0/24
-           gateway: 17.18.0.1
+        - subnet: 17.18.0.0/24
+          gateway: 17.18.0.1
         - subnet: "2001:db8:1::/64"
-          gateway: "2001:db8:1::1"  # IPv6 gateway
-
+          gateway: "2001:db8:1::1" # IPv6 gateway
 
 volumes:
   gromox_mysql_data:
