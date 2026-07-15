@@ -52,4 +52,7 @@ if [ "$ENABLE_FILES" = "true" ]; then
   echo "*/5 * * * * grofiles /usr/bin/php -f /usr/share/grommunio-files/cron.php" > /etc/cron.d/grommunio-files
 fi
 
+# ── Create required runtime directories ────────────────────────────
+mkdir -p /run/php-fpm
+
 exec /usr/local/bin/supervisord -n -c /etc/supervisord.conf

@@ -45,4 +45,7 @@ for f in /usr/share/grommunio-common/nginx.conf /etc/nginx/nginx.conf; do
   sed -i 's/\blisten\s\+443\b/listen 8443/g; s/\blisten\s\+\[::]\:443\b/listen [::]:8443/g' "$f"
 done
 
+# ── Create required runtime directories ────────────────────────────
+mkdir -p /run/php-fpm
+
 exec /usr/local/bin/supervisord -n -c /etc/supervisord.conf

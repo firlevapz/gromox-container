@@ -111,4 +111,8 @@ DEPLOY
   echo "0 */12 * * * root certbot renew --quiet --standalone --http-01-port 8080 --pre-hook 'supervisorctl stop nginx' --deploy-hook /usr/local/bin/grommunio-cert-deploy --post-hook 'supervisorctl start nginx'" > /etc/cron.d/certbot-renew
 fi
 
+# ── Create required runtime directories ────────────────────────────
+mkdir -p /run/gromox /run/php-fpm
+chown gromox:gromox /run/gromox 2>/dev/null || true
+
 exec /usr/local/bin/supervisord -n -c /etc/supervisord.conf
