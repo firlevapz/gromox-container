@@ -87,6 +87,7 @@ fi
 # Enable grommunio-chat if configured (check for chat config file existence)
 if [ -f "${CHAT_CONFIG}" ] && [ -f /etc/supervisor.d/grommunio-chat.conf ]; then
   sed -i 's/autostart=false/autostart=true/' /etc/supervisor.d/grommunio-chat.conf
+  sed -i 's|^command=/usr/bin/grommunio-chat$|command=/usr/bin/grommunio-chat server --config /etc/grommunio-chat/config.json|' /etc/supervisor.d/grommunio-chat.conf
 fi
 
 # Set up certbot renewal if Let's Encrypt is enabled
