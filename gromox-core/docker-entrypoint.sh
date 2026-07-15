@@ -84,8 +84,12 @@ fi
 
 # ── Conditional services ──────────────────────────────────────────
 
-# Enable grommunio-chat if configured (check for chat config file existence)
-if [ -f "${CHAT_CONFIG}" ] && [ -f /etc/supervisor.d/grommunio-chat.conf ]; then
+# Enable grommunio-chat only when the chart explicitly turned it on via
+# ENABLE_CHAT. Previously we tested for the CHAT_CONFIG file, but that flag
+# leaked into var.env even when chat was disabled (because var.env content was
+# never reconciled by ArgoCD), causing chat to autostart and crash. Use the
+# unambiguous ENABLE_CHAT boolean emitted by the chart instead.
+if [ "${ENABLE_CHAT}" = "true" ] && [ -f /etc/supervisor.d/grommunio-chat.conf ]; then
   sed -i 's/autostart=false/autostart=true/' /etc/supervisor.d/grommunio-chat.conf
   sed -i 's|^command=/usr/bin/grommunio-chat$|command=/usr/bin/grommunio-chat server --config /etc/grommunio-chat/config.json|' /etc/supervisor.d/grommunio-chat.conf
 fi

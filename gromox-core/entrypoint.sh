@@ -38,7 +38,14 @@ memory_check
 
 # Set repository credentials directly
 # shellcheck source=common/repo
-INSTALLVALUE="core, chat"
+# Derive the installed component set from ENABLE_CHAT (emitted by the Helm
+# chart unconditionally). Previously this was hardcoded to "core, chat",
+# which made the chat-disable flag below effectively unreachable.
+if [ "${ENABLE_CHAT}" = "true" ]; then
+  INSTALLVALUE="core, chat"
+else
+  INSTALLVALUE="core"
+fi
 
 X500_FILE="/etc/gromox/.x500_org"
 if [ -n "${X500}" ]; then
