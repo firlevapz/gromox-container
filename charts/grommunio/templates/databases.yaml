@@ -94,10 +94,8 @@ spec:
             periodSeconds: 30
             timeoutSeconds: 5
             failureThreshold: 5
-          {{- with $root.Values.mariadb.resources }}
           resources:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
+            {{- toYaml $root.Values.mariadb.resources | nindent 12 }}
           volumeMounts:
             - name: data
               mountPath: /var/lib/mysql

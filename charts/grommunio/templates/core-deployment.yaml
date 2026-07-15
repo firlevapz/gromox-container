@@ -95,10 +95,8 @@ spec:
             periodSeconds: 30
             failureThreshold: 5
           {{- end }}
-          {{- with .Values.core.resources }}
           resources:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
+            {{- toYaml .Values.core.resources | nindent 12 }}
           volumeMounts:
             - name: var-env
               mountPath: /home/vars

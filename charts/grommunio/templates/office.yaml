@@ -87,10 +87,8 @@ spec:
               port: https
             periodSeconds: 30
             failureThreshold: 5
-          {{- with .Values.office.resources }}
           resources:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
+            {{- toYaml .Values.office.resources | nindent 12 }}
           volumeMounts:
             - name: var-env
               mountPath: /home/vars
