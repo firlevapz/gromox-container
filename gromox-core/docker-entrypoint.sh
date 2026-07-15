@@ -112,7 +112,12 @@ DEPLOY
 fi
 
 # ── Create required runtime directories ────────────────────────────
-mkdir -p /run/gromox /run/php-fpm
+mkdir -p /run/gromox /run/php-fpm /run/grommunio /run/grommunio-admin-api
 chown gromox:gromox /run/gromox 2>/dev/null || true
+chown root:nginx /run/grommunio /run/grommunio-admin-api 2>/dev/null || true
+
+# gromox queue directory tree (needed by delivery / delivery-queue)
+mkdir -p /var/lib/gromox/queue/{mess,cache,save,tmp,pipe}
+chown -R gromox:gromox /var/lib/gromox/queue 2>/dev/null || true
 
 exec /usr/local/bin/supervisord -n -c /etc/supervisord.conf
