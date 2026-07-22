@@ -8,6 +8,10 @@ metadata:
   name: {{ include "grommunio.fullname" . }}-core
   labels:
     {{- include "grommunio.labels" (dict "root" . "component" "core") | nindent 4 }}
+  {{- if and .Values.ingress.enabled .Values.ingress.skipVerifyBackendTLS }}
+  annotations:
+    traefik.ingress.kubernetes.io/service.serverstransport: {{ .Release.Namespace }}-{{ include "grommunio.fullname" . }}-backend@kubernetescrd
+  {{- end }}
 spec:
   type: ClusterIP
   ports:
@@ -17,7 +21,7 @@ spec:
     - name: https
       port: 8443
       targetPort: https
-    - name: admin-https
+    - name: https-admin
       port: 9443
       targetPort: admin-https
     - name: smtp

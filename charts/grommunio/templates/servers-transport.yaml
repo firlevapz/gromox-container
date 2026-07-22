@@ -1,0 +1,11 @@
+{{- if and .Values.ingress.enabled .Values.ingress.skipVerifyBackendTLS }}
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: {{ include "grommunio.fullname" . }}-backend
+  labels:
+    {{- include "grommunio.labels" (dict "root" . "component" "core") | nindent 4 }}
+spec:
+  insecureSkipVerify: true
+{{- end }}

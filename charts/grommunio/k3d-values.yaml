@@ -1,0 +1,32 @@
+# Override values for local k3d deployment
+# Certificates PVC needs ReadWriteOnce on single-node k3d (local-path provisioner
+# doesn't support ReadWriteMany)
+persistence:
+  certs:
+    accessModes:
+      - ReadWriteOnce
+
+config:
+  fqdn: "mail.local"
+  domain: "local"
+  adminPass: "admin123"
+  organization: "grommunio"
+  timezone: "Europe/Vienna"
+  relayhost: ""
+  clearDbs: false
+  forceReconfig: true
+
+externalService:
+  enabled: true
+  type: LoadBalancer
+  ports:
+    smtp: 25
+    http: 80
+    https: 443
+    smtps: 465
+    submission: 587
+    imap: 143
+    imaps: 993
+    pop3: 110
+    pop3s: 995
+    admin: 8443

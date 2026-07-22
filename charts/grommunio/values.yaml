@@ -238,10 +238,15 @@ externalService:
     pop3s: 995
     admin: 8443
 
-# Optional Ingress for the web UI. grommunio terminates TLS itself, so the
-# ingress must talk HTTPS to the backend (see annotation example below) or
-# use TLS passthrough. Mail protocols cannot go through an Ingress; keep the
-# external service for them.
+# Optional Ingress for the web UI. grommunio terminates TLS with self-signed
+# certificates, so the ingress must talk HTTPS to the backend — and the ingress
+# controller must be told to skip TLS verification of the backend certificate.
+#
+# For Traefik: set `skipVerifyBackendTLS: true`. The chart creates a
+# ServersTransport CRD and annotates the grommunio-core Service so Traefik
+# accepts the self-signed cert. No extra configuration needed.
+#
+# Mail protocols cannot go through an Ingress; keep the external service for them.
 ingress:
   enabled: false
   className: ""
@@ -254,3 +259,13 @@ ingress:
   #  - secretName: grommunio-tls
   #    hosts:
   #      - mail.example.com
+  # Set true for Traefik to skip TLS verification of the backend self-signed
+  # certificate. Creates a ServersTransport CRD and annotates the core Service.
+  skipVerifyBackendTLS: false
+  # Optional admin UI ingress on a separate hostname.
+  admin: {}
+  #  host: admin.mail.example.com
+  #  tls:
+  #    - secretName: grommunio-admin-tls
+  #      hosts:
+  #        - admin.mail.example.com
